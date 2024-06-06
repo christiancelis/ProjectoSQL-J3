@@ -1,3 +1,4 @@
+drop database AutoTaller;
 create database AutoTaller;
 use AutoTaller;
 CREATE TABLE Cliente (
@@ -29,11 +30,21 @@ CREATE TABLE Vehiculo (
     FOREIGN KEY (idModelo) REFERENCES Modelo(id)
 );
 
+CREATE TABLE Servicio (
+    id INT PRIMARY KEY,
+    nombre VARCHAR(50),
+    descripcion VARCHAR(100),
+    costo DECIMAL
+);
+
+
 CREATE TABLE Cita (
     id INT PRIMARY KEY,
     FechaHora DATETIME,
     idCliente INT,
-    FOREIGN KEY (idCliente) REFERENCES Cliente(id)
+    idServicio INT,
+    FOREIGN KEY (idCliente) REFERENCES Cliente(id),
+    FOREIGN KEY (idServicio) REFERENCES Servicio(id)
 );
 
 CREATE TABLE Facturacion (
@@ -44,20 +55,14 @@ CREATE TABLE Facturacion (
     FOREIGN KEY (idCliente) REFERENCES Cliente(id)
 );
 
-CREATE TABLE Servicio (
-    id INT PRIMARY KEY,
-    nombre VARCHAR(50),
-    descripcion VARCHAR(100),
-    costo DECIMAL,
-    idCita INT,
-    FOREIGN KEY (idCita) REFERENCES Cita(id)
-);
 
 CREATE TABLE Reparacion (
     id INT PRIMARY KEY,
     Fecha DATE,
     CostoTotal DECIMAL,
-    descripcion VARCHAR(50)
+    descripcion VARCHAR(50),
+    IdVehiculo INT,
+    FOREIGN KEY (IdVehiculo) REFERENCES Vehiculo(id)
 );
 
 CREATE TABLE Servicio_reparacion (
@@ -111,10 +116,12 @@ CREATE TABLE Pieza (
 
 CREATE TABLE Reparacion_pieza (
     id INT PRIMARY KEY,
+    cantidad INT,
     idReparacion INT,
     idPieza INT,
     FOREIGN KEY (idReparacion) REFERENCES Reparacion(id),
     FOREIGN KEY (idPieza) REFERENCES Pieza(id)
+    
 );
 
 CREATE TABLE Ubicacion (
@@ -202,3 +209,5 @@ CREATE TABLE Telefono_proveedor (
     FOREIGN KEY (idTelefono) REFERENCES Telefono(id),
     FOREIGN KEY (idProveedor) REFERENCES Proveedor(id)
 );
+
+
