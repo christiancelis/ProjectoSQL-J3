@@ -61,6 +61,7 @@ CREATE TABLE Reparacion (
     Fecha DATE,
     CostoTotal DECIMAL,
     descripcion VARCHAR(50),
+    duracionTotal INT,
     IdVehiculo INT,
     FOREIGN KEY (IdVehiculo) REFERENCES Vehiculo(id)
 );

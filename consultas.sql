@@ -1,4 +1,5 @@
 -- Consultas requeridas
+use AutoTaller;
 -- 1. Obtener el historial de reparaciones de un vehículo específico
 
 select re.id as "Codigo Reparacion", veh.id as "Codigo ", re.Fecha, re.CostoTotal
@@ -71,45 +72,117 @@ where inv.cantidad < 50;
 select distinct(sv.nombre)
 from Servicio as sv
 inner join Cita as ct on ct.idServicio=sv.id
-where date(ct.FechaHora) = "2024-06-12";
+where date(ct.FechaHora) BETWEEN "2024-06-08" and "2024-06-12";
 -- 11. Obtener el costo total de reparaciones para cada cliente en un período
 -- específico
 
-SELECt fa.idCliente, CostoTotal
+SELECt rp.fecha,fa.idCliente, CostoTotal
 from Reparacion as rp
 inner join Servicio_reparacion as sr on sr.idReparacion=rp.id 
 inner join Facturacion_detalle as fd on fd.idServicio_Reparacion=sr.id
 inner join Facturacion as fa on fa.id=fd.idFacturacion
-where rp.Fecha="2024-06-9";
+where rp.Fecha BETWEEN "2024-06-08" and "2024-06-12";
 
 -- 12. Listar los empleados con mayor cantidad de reparaciones realizadas en un
 -- período específico
 
-select distinct(emp.nombre) as Empleado, rp.Fecha,count(rp.id) AS "Mayor Cantidad de Reparaciones"
+select distinct(emp.nombre) as Empleado, rp.Fecha,count(rp.id) AS "Cantidad de Reparaciones"
 from Reparacion as rp
 inner join Reparacion_Empleado as remp on remp.idReparacion=rp.id
 inner join Empleado as emp on emp.id=remp.idEmpleado
 group by emp.nombre, rp.Fecha
-having rp.Fecha = "2024-06-9"
-order by "Mayor Cantidad de Reparaciones" DESC;
-
-
+having rp.Fecha BETWEEN "2024-06-08" and "2024-06-12"
+order by "Cantidad de Reparaciones" DESC;
 
 -- 13. Obtener las piezas más utilizadas en reparaciones durante un período
 -- específico
+
+select rp.Fecha, pz.nombre
+from Reparacion as rp 
+inner join Reparacion_pieza as rpz on rpz.idReparacion=rp.id  
+inner join Pieza as pz on pz.id= rpz.idPieza
+where rp.Fecha BETWEEN "2024-06-08" and "2024-06-12";
+
 -- 14. Calcular el promedio de costo de reparaciones por vehículo
+
+select vh.id, md.nombre, avg(rp.CostoTotal) as "Costo Promedio"
+from vehiculo as vh
+inner join Reparacion as rp on rp.idVehiculo=vh.id
+inner join Modelo as md on md.id=vh.idModelo
+GROUP BY vh.id, md.nombre
+order by vh.id;
+
 -- 15. Obtener el inventario de piezas por proveedor
+
+select pro.nombre, pz.nombre, pz.precio,inv.Cantidad
+from Pieza as pz
+inner join Inventario as inv on inv.idPieza=pz.id
+inner join Proveedor_pieza as ppz on ppz.idPieza=pz.id 
+inner join Proveedor as pro on pro.id=ppz.idProveedor;
+
+
 -- 16. Listar los clientes que no han realizado reparaciones en el último año
+
+SELECt id, cli.nombre
+from Cliente as cli 
+where cli.id not in (select idCliente from  Facturacion as fa);
+
+
 -- 17. Obtener las ganancias totales del taller en un período específico
+
+select sum(CostoTotal) as "Costo Total"
+from Reparacion
+where Fecha BETWEEN "2024-06-08" and "2024-06-12";
+
+
 -- 18. Listar los empleados y el total de horas trabajadas en reparaciones en un
 -- período específico (asumiendo que se registra la duración de cada reparación)
+
+select distinct(emp.id), emp.nombre, sum(duracionTotal) as "Total Horas Trabajadas"
+from Empleado as emp 
+inner join Reparacion_Empleado as remp on remp.idEmpleado=emp.id 
+inner join Reparacion as rp on rp.id=remp.idReparacion
+where rp.Fecha BETWEEN "2024-06-01" and "2024-06-12"
+GROUP BY emp.nombre, emp.id;
+
+
 -- 19. Obtener el listado de servicios prestados por cada empleado en un período
--- específico
+-- específico.
+
+select emp.nombre, sv.nombre
+from Servicio as sv 
+inner join Servicio_reparacion as svr on svr.idServicio=sv.id
+inner join Reparacion as rp on rp.id=svr.idReparacion
+inner join Reparacion_Empleado as remp on remp.idReparacion=rp.id 
+inner join Empleado as emp on emp.id=remp.idEmpleado
+where rp.Fecha BETWEEN "2024-06-01" and "2024-06-12";
 
 -- Subconsultas
+
 -- 1. Obtener el cliente que ha gastado más en reparaciones durante el último año.
+
+select id, concat(nombre," ",apellido) as Nombre,(select Total from Facturacion as fac where fac.idCliente=cli.id and year(Fecha)="2024") as "Max Gastado" 
+from Cliente as cli
+order by (select Total from Facturacion as fac where fac.idCliente=cli.id) desc
+limit 1;
+
+
 -- 2. Obtener la pieza más utilizada en reparaciones durante el último mes
+
+select f.cf as "Pieza",  max(f.ct) as "Cantidad Utilizado"
+from(select pz.nombre as cf, count(pz.id) as ct, rp.Fecha
+from pieza as pz
+inner join Reparacion_pieza as rpz on rpz.idPieza= pz.id 
+inner join Reparacion as rp on rp.id=rpz.idReparacion
+where (year(rp.Fecha),month(rp.Fecha)) in (select max(Year(Fecha)) , max(Month(Fecha)) 
+from Reparacion)
+group by pz.id,rp.Fecha) as f
+group by f.cf;
+
+
 -- 3. Obtener los proveedores que suministran las piezas más caras
+
+
 
 -- 4. Listar las reparaciones que no utilizaron piezas específicas durante el último
 -- año

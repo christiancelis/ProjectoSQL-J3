@@ -129,25 +129,25 @@ INSERT INTO Facturacion (id, Fecha, Total, idCliente) VALUES
 
 
 
-INSERT INTO Reparacion (id, Fecha, CostoTotal, descripcion,idVehiculo) VALUES
-(1, '2024-06-07', 120000, 'Reparación de motor',1),
-(2, '2024-06-09', 150000, 'Reparación de frenos',2),
-(3, '2024-06-11', 180000, 'Reparación de suspensión',3),
-(4, '2024-06-13', 200000, 'Reparación de dirección',4),
-(5, '2024-06-15', 220000, 'Reparación de sistema eléctrico',5),
-(6, '2024-06-17', 250000, 'Reparación de carrocería',6),
-(7, '2024-06-19', 300000, 'Reparación de transmisión',7),
-(8, '2024-06-21', 280000, 'Reparación de sistema ABS',8),
-(9, '2024-06-23', 260000, 'Reparación de sistema de escape',9),
-(10, '2024-06-25', 230000, 'Reparación de sistema de enfriamiento',10),
-(11, '2024-06-27', 210000, 'Reparación de sistema de luces',11),
-(12, '2024-06-29', 190000, 'Reparación de sistema de aire acondicionado',12),
-(13, '2024-07-01', 170000, 'Reparación de sistema de emisiones',13),
-(14, '2024-07-03', 140000, 'Reparación de sistema de dirección',14),
-(15, '2024-07-05', 160000, 'Reparación de sistema de enfriamiento',15),
-(16, '2024-07-07', 180000, 'Reparación de sistema de suspensión',16),
-(17, '2024-07-09', 200000, 'Reparación de sistema de frenos',17),
-(18, '2024-07-11', 220000, 'Reparación de sistema eléctrico',18)
+INSERT INTO Reparacion (id, Fecha, CostoTotal,descripcion,duracionTotal,idVehiculo) VALUES
+(1, '2024-06-07', 120000, 'Reparación de motor',20,1),
+(2, '2024-06-09', 150000, 'Reparación de frenos',2,2),
+(3, '2024-06-11', 180000, 'Reparación de suspensión',5,3),
+(4, '2024-06-13', 200000, 'Reparación de dirección',40,4),
+(5, '2024-06-15', 220000, 'Reparación de sistema eléctrico',9,5),
+(6, '2024-06-17', 250000, 'Reparación de carrocería',20,6),
+(7, '2024-06-19', 300000, 'Reparación de transmisión',32,7),
+(8, '2024-06-21', 280000, 'Reparación de sistema ABS',53,8),
+(9, '2024-06-23', 260000, 'Reparación de sistema de escape',15,9),
+(10, '2024-06-25', 230000, 'Reparación de sistema de enfriamiento',38,10),
+(11, '2024-06-27', 210000, 'Reparación de sistema de luces',23,11),
+(12, '2024-06-29', 190000, 'Reparación de sistema de aire acondicionado',15,12),
+(13, '2024-07-01', 170000, 'Reparación de sistema de emisiones',96,13),
+(14, '2024-07-03', 140000, 'Reparación de sistema de dirección',12,14),
+(15, '2024-07-05', 160000, 'Reparación de sistema de enfriamiento',123,15),
+(16, '2024-07-07', 180000, 'Reparación de sistema de suspensión',19,16),
+(17, '2024-07-09', 200000, 'Reparación de sistema de frenos',56,17),
+(18, '2024-07-11', 220000, 'Reparación de sistema eléctrico',90,18)
 
 
 INSERT INTO Servicio_reparacion (id, idServicio, idReparacion) VALUES
