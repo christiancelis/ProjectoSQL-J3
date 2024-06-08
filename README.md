@@ -2,17 +2,20 @@
 
 Requerimientos.
 
+Los siguientes Modelos se encuentran dentro de la Carpeta ***IMGS***.
+
 1. Modelo Conceptual
 
-![texto_alternativo](ubicacion_de_la_imagen){width=width height=height}
+![Modelo Conceptual](/IMGS/Modelo%20Conceptual.png)
+
 
 2. Lógico 
 
-![texto_alternativo](ubicacion_de_la_imagen){width=width height=height}
+![Modelo Logico](/IMGS/Modelo%20Logico.png)
 
 3. Físico - Relacional
 
-![texto_alternativo](ubicacion_de_la_imagen){width=width height=height}
+![Modelo Fisico - Relacional](/IMGS/Modelo%20ER%20-%20Fisico.png)
 
 
 ## Consultas requeridas
