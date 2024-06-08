@@ -3,25 +3,26 @@ create database AutoTaller;
 use AutoTaller;
 CREATE TABLE Cliente (
     id INT PRIMARY KEY,
-    Nombre VARCHAR(50),
-    Apellido VARCHAR(50),
-    Direccion VARCHAR(100),
-    Email VARCHAR(50)
+    Nombre VARCHAR(50) not null,
+    Apellido VARCHAR(50) not null,
+    Direccion VARCHAR(100) not null,
+    Email VARCHAR(50) not null unique
 );
 
 CREATE TABLE Marca (
     id INT PRIMARY KEY,
-    nombre VARCHAR(20)
+    nombre VARCHAR(20) not null
 );
 
 CREATE TABLE Modelo (
     id INT PRIMARY KEY,
-    nombre VARCHAR(20)
+    nombre VARCHAR(20) not null
 );
 
 CREATE TABLE Vehiculo (
     id INT PRIMARY KEY,
-    Placa VARCHAR(10),
+    Placa VARCHAR(10) not null,
+    Kilometraje decimal not null,
     idCliente INT,
     idMarca INT,
     idModelo INT,
@@ -32,15 +33,15 @@ CREATE TABLE Vehiculo (
 
 CREATE TABLE Servicio (
     id INT PRIMARY KEY,
-    nombre VARCHAR(50),
-    descripcion VARCHAR(100),
-    costo DECIMAL
+    nombre VARCHAR(50) not null,
+    descripcion VARCHAR(100) not null,
+    costo DECIMAL not null
 );
 
 
 CREATE TABLE Cita (
     id INT PRIMARY KEY,
-    FechaHora DATETIME,
+    FechaHora DATETIME not null,
     idCliente INT,
     idServicio INT,
     FOREIGN KEY (idCliente) REFERENCES Cliente(id),
@@ -49,8 +50,8 @@ CREATE TABLE Cita (
 
 CREATE TABLE Facturacion (
     id INT PRIMARY KEY,
-    Fecha DATE,
-    Total DECIMAL,
+    Fecha DATE not null,
+    Total DECIMAL not null,
     idCliente INT,
     FOREIGN KEY (idCliente) REFERENCES Cliente(id)
 );
@@ -58,10 +59,10 @@ CREATE TABLE Facturacion (
 
 CREATE TABLE Reparacion (
     id INT PRIMARY KEY,
-    Fecha DATE,
-    CostoTotal DECIMAL,
-    descripcion VARCHAR(50),
-    duracionTotal INT,
+    Fecha DATE not null,
+    CostoTotal DECIMAL not null,
+    descripcion VARCHAR(50) not null,
+    duracionTotal INT not null,
     IdVehiculo INT,
     FOREIGN KEY (IdVehiculo) REFERENCES Vehiculo(id)
 );
@@ -77,8 +78,8 @@ CREATE TABLE Servicio_reparacion (
 
 CREATE TABLE Facturacion_detalle (
     id INT PRIMARY KEY,
-    Cantidad INT,
-    Precio DECIMAL,
+    Cantidad INT not null,
+    Precio DECIMAL not null,
     idFacturacion INT,
     idServicio_Reparacion INT,
     FOREIGN KEY (idFacturacion) REFERENCES Facturacion(id),
@@ -87,13 +88,13 @@ CREATE TABLE Facturacion_detalle (
 
 CREATE TABLE Cargo (
     id INT PRIMARY KEY,
-    nombre VARCHAR(50)
+    nombre VARCHAR(50) not null
 );
 
 CREATE TABLE Empleado (
     id INT PRIMARY KEY,
-    nombre VARCHAR(50),
-    apellido VARCHAR(50),
+    nombre VARCHAR(50) not null,
+    apellido VARCHAR(50), 
     idCargo INT,
     FOREIGN KEY (idCargo) REFERENCES Cargo(id)
 );
@@ -109,15 +110,15 @@ CREATE TABLE Reparacion_Empleado (
 
 CREATE TABLE Pieza (
     id INT PRIMARY KEY,
-    nombre VARCHAR(100),
-    descripcion VARCHAR(100),
-    precio DECIMAL
+    nombre VARCHAR(100) not null,
+    descripcion VARCHAR(100) not null,
+    precio DECIMAL not null
 );
 
 
 CREATE TABLE Reparacion_pieza (
     id INT PRIMARY KEY,
-    cantidad INT,
+    cantidad INT not null,
     idReparacion INT,
     idPieza INT,
     FOREIGN KEY (idReparacion) REFERENCES Reparacion(id),
@@ -127,12 +128,12 @@ CREATE TABLE Reparacion_pieza (
 
 CREATE TABLE Ubicacion (
     id INT PRIMARY KEY,
-    zona VARCHAR(50)
+    zona VARCHAR(50) not null
 );
 
 CREATE TABLE Inventario (
     id INT PRIMARY KEY,
-    Cantidad INT,
+    Cantidad INT not null,
     idPieza INT,
     idUbicacion INT,
     FOREIGN KEY (idPieza) REFERENCES Pieza(id),
@@ -141,9 +142,9 @@ CREATE TABLE Inventario (
 
 CREATE TABLE Proveedor (
     id INT PRIMARY KEY,
-    nombre VARCHAR(50),
-    Contacto VARCHAR(50),
-    Email VARCHAR(50)
+    nombre VARCHAR(50) not null,
+    Contacto VARCHAR(50) not null,
+    Email VARCHAR(50) not null unique
 );
 
 CREATE TABLE Proveedor_pieza (
@@ -156,8 +157,8 @@ CREATE TABLE Proveedor_pieza (
 
 CREATE TABLE Orden_compra (
     id INT PRIMARY KEY,
-    fecha DATE,
-    total DECIMAL,
+    fecha DATE not null,
+    total DECIMAL not null,
     idEmpleado INT,
     idProveedor INT,
     FOREIGN KEY (idEmpleado) REFERENCES Empleado(id),
@@ -166,8 +167,8 @@ CREATE TABLE Orden_compra (
 
 CREATE TABLE Orden_detalle (
     id INT PRIMARY KEY,
-    cantidad INT,
-    precio DECIMAL,
+    cantidad INT not null,
+    precio DECIMAL not null,
     idOrden_compra INT,
     idPieza INT,
     FOREIGN KEY (idOrden_compra) REFERENCES Orden_compra(id),
@@ -176,12 +177,12 @@ CREATE TABLE Orden_detalle (
 
 CREATE TABLE Tipo_telefono (
     id INT PRIMARY KEY,
-    tipo VARCHAR(20)
+    tipo VARCHAR(20) not null
 );
 
 CREATE TABLE Telefono (
     id INT PRIMARY KEY,
-    telefono VARCHAR(20),
+    telefono VARCHAR(20) unique,
     idTipoTelefono INT,
     FOREIGN KEY (idTipoTelefono) REFERENCES Tipo_telefono(id)
 );

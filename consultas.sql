@@ -2,7 +2,7 @@
 use AutoTaller;
 -- 1. Obtener el historial de reparaciones de un vehículo específico
 
-select re.id as "Codigo Reparacion", veh.id as "Codigo ", re.Fecha, re.CostoTotal
+select re.id as "Codigo Reparacion", veh.id as "CodigoVehiculo", re.Fecha, re.CostoTotal
 from Vehiculo as veh
 inner join Reparacion as re on re.IdVehiculo=veh.id
 where veh.id="3";
@@ -69,10 +69,12 @@ where inv.cantidad < 50;
 
 -- 10. Obtener la lista de servicios más solicitados en un período específico
 
-select distinct(sv.nombre)
+select sv.nombre, count(ct.idServicio) as Cantidad
 from Servicio as sv
 inner join Cita as ct on ct.idServicio=sv.id
-where date(ct.FechaHora) BETWEEN "2024-06-08" and "2024-06-12";
+where date(ct.FechaHora) BETWEEN "2024-06-08" and "2024-06-12"
+group by sv.nombre
+order by cantidad desc;
 -- 11. Obtener el costo total de reparaciones para cada cliente en un período
 -- específico
 
@@ -206,9 +208,10 @@ from Reparacion_pieza as rpz
 where idPieza is null);
 -- 5. Obtener las piezas que están en inventario por debajo del 10% del stock inicial
 
-select *
-from pieza
-
+select pz.nombre, inv.Cantidad 
+from pieza as pz
+inner join Inventario as inv on inv.idPieza=pz.id 
+where inv.Cantidad < (600*0.1);
 
 -- Procedimientos Almacenados
 -- -- 1. Crear un procedimiento almacenado para insertar una nueva reparación.
@@ -240,7 +243,6 @@ call InsertarReparacion(30,"2024-12-22",3300000,"Limpieza de Motor",1,4);
 
 -- 2. Crear un procedimiento almacenado para actualizar el inventario de una pieza.
 
--- drop procedure ActualizarInvPieza;
 delimiter $$
 create procedure ActualizarInvPieza
 (
@@ -323,11 +325,156 @@ call generarFactura(42,"2024-09-22",50000,9,28,2,25000,5);
 
 -- 5. Crear un procedimiento almacenado para obtener el historial de reparaciones
 -- de un vehículo
+
+delimiter $$
+
+create procedure historialReparacionesvh(
+    in idVehiculo int
+)
+begin
+    select re.id as "Codigo Reparacion", veh.id as "Codigo Vehiculo ", re.Fecha, re.CostoTotal
+    from Vehiculo as veh
+    inner join Reparacion as re on re.IdVehiculo=veh.id
+    where veh.id= idVehiculo;
+    end$$
+
+delimiter ;
+
+call historialReparacionesvh(3);
+
 -- 6. Crear un procedimiento almacenado para calcular el costo total de
 -- reparaciones de un cliente en un período
+
+DROP PROCEDURE IF EXISTS costoTotalReparaciones;
+DELIMITER $$
+
+CREATE PROCEDURE costoTotalReparaciones(
+    IN idCliente INT,
+    IN FechaInicial DATE,
+    IN FechaFinal DATE
+)
+BEGIN
+    DECLARE mensaje VARCHAR(50);
+    DECLARE bandera BOOLEAN DEFAULT FALSE;
+
+    IF FechaInicial > FechaFinal THEN
+        SET mensaje = 'Fecha Inicial no puede ser mayor a fecha final';
+        SET bandera = TRUE;
+    END IF;
+
+    IF bandera THEN
+        SELECT mensaje AS Mensaje;
+    ELSE
+        SELECT 
+            fa.idCliente,
+            SUM(rp.CostoTotal) AS CostoTotal
+        FROM Reparacion AS rp
+        INNER JOIN Servicio_reparacion AS sr ON sr.idReparacion = rp.id
+        INNER JOIN Facturacion_detalle AS fd ON fd.idServicio_Reparacion = sr.id
+        INNER JOIN Facturacion AS fa ON fa.id = fd.idFacturacion
+        WHERE rp.Fecha BETWEEN FechaInicial AND FechaFinal  and fa.idCliente=idCliente
+        GROUP BY fa.idCliente;
+    END IF;
+END$$
+
+DELIMITER ;
+
+CALL costoTotalReparaciones(2,'2024-06-08', '2024-06-12');
+
 -- 7. Crear un procedimiento almacenado para obtener la lista de vehículos que
 -- requieren mantenimiento basado en el kilometraje.
+
+delimiter $$
+create procedure ListaVHmantenimiento(in kilometraje decimal)
+begin
+    select vh.id, md.nombre , vh.Kilometraje
+    from Vehiculo as vh
+    inner join Modelo as md on md.id=vh.idModelo
+    where vh.Kilometraje >= kilometraje;
+end$$
+delimiter ;
+
+
+call ListaVHmantenimiento(40000);
+
 -- 8. Crear un procedimiento almacenado para insertar una nueva orden de compra
+drop procedure InsertarOrdenCompra;
+delimiter $$
+create procedure InsertarOrdenCompra
+(
+    in idCompra int,
+    in Fecha date,
+    in idEmpleado int,
+    in idProveedor int,
+    in cantidad int,
+    in precio decimal,
+    in idPieza int
+)
+begin
+        insert into Orden_compra values(idCompra,Fecha,cantidad*precio,idEmpleado,idProveedor);
+        insert into Orden_detalle values(idCompra,cantidad,precio,idCompra,idPieza);
+end$$
+       
+delimiter ;
+
+call InsertarOrdenCompra(11,"2024-03-22",2,2,4,10000,6);
+
+select * from Orden_compra;
+select * from Orden_detalle;
+
+
 -- 9. Crear un procedimiento almacenado para actualizar los datos de un cliente
+
+delimiter $$
+create procedure ActualizarCliente(
+    in idCliente int,
+    in Nombrecli varchar(50),
+    in Apellidocli varchar(50),
+    in Direccioncli varchar(70),
+    in Emailcli varchar(30)
+)
+begin
+    declare mensaje varchar(50);
+    update Cliente
+    set Nombre=Nombrecli,
+     Apellido=Apellidocli,
+     Direccion=Direccioncli,
+     Email=Emailcli
+    where id=idCliente;
+
+    if ROW_COUNT() >0 THEN
+        set mensaje = "Actualizacion del cliente exitosa";
+    ELSE
+        set mensaje = "Error al actualizar el cliente";
+    end if;
+
+    select mensaje;
+
+end$$
+delimiter ;
+
+call ActualizarCliente(1,"Juan","perez","Avenida siempre viva","pepejuan@dad.com");
+
+select * from Cliente;
+
+
 -- 10. Crear un procedimiento almacenado para obtener los servicios más solicitados
 -- en un período
+
+delimiter $$
+create procedure ServicioxPeriodo
+(
+    in FechaInicio date,
+    in FechaFin date
+)
+    begin
+            select sv.nombre, count(ct.idServicio) as Cantidad
+            from Servicio as sv
+            inner join Cita as ct on ct.idServicio=sv.id
+            where date(ct.FechaHora) BETWEEN FechaInicio and FechaFin
+            group by sv.nombre
+            order by cantidad desc;
+    end$$
+delimiter ;
+
+call ServicioxPeriodo("2024-06-08","2024-06-12");
