@@ -297,19 +297,17 @@ delimiter $$
 create procedure generarFactura(
     in idFactura int,
     in Fechaf date,
-    in Totalf decimal,
     in idClientef int,
-    in idFacturadt int,
     in Cantidadf int,
     in precio decimal,
     in idServicioReparacion int
 )
 begin
 	declare mensaje varchar(50);
-    insert into Facturacion values(idFactura,Fechaf,Totalf,idClientef);
-    insert into Facturacion_detalle values(idFacturadt,Cantidadf,precio,idServicioReparacion);
+    insert into Facturacion values(idFactura,Fechaf,precio*Cantidadf,idClientef);
+    insert into Facturacion_detalle values(idFactura,Cantidadf,precio,idFactura,idServicioReparacion);
     
-    if(ROW_COUNT > 0) THEN
+    if(ROW_COUNT() > 0) THEN
         set mensaje = "La factura se ha creado con exito";
     else 
         set mensaje = "Error no se creo correctamente";
@@ -321,7 +319,7 @@ end$$
 
 delimiter ;
 
-call generarFactura(42,"2024-09-22",50000,9,28,2,25000,5);
+call generarFactura(42,"2024-09-22",5,9,28000,2);
 
 -- 5. Crear un procedimiento almacenado para obtener el historial de reparaciones
 -- de un vehículo
