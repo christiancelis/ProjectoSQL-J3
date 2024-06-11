@@ -62,7 +62,7 @@ INSERT INTO Vehiculo (id, Placa, Kilometraje, idCliente, idMarca, idModelo) VALU
 (15, 'PQR345',39087 ,15, 5, 5),
 (16, 'STU678',14300,16, 6, 6),
 (17, 'VWX901',8500,17, 7, 7),
-(18, 'YZA234',2300,18, 8, 8)
+(18, 'YZA234',2300,18, 8, 8);
 
 
 INSERT INTO Servicio (id, nombre, descripcion, costo) VALUES
@@ -83,7 +83,7 @@ INSERT INTO Servicio (id, nombre, descripcion, costo) VALUES
 (15, 'Sistema de escape', 'Reparación y mantenimiento del sistema de escape', 80000),
 (16, 'Reparación de luces', 'Reparación de luces y sistema de iluminación', 60000),
 (17, 'Cambio de filtro de aire', 'Cambio de filtro de aire y limpieza', 50000),
-(18, 'Diagnóstico de fallas', 'Diagnóstico y solución de fallas', 100000)
+(18, 'Diagnóstico de fallas', 'Diagnóstico y solución de fallas', 100000);
 
 
 INSERT INTO Cita (id, FechaHora, idCliente,idServicio) VALUES
@@ -104,7 +104,7 @@ INSERT INTO Cita (id, FechaHora, idCliente,idServicio) VALUES
 (15, '2024-07-04 15:00:00', 15,15),
 (16, '2024-07-06 16:30:00', 16,16),
 (17, '2024-07-08 18:00:00', 17,17),
-(18, '2024-07-10 19:30:00', 18,18)
+(18, '2024-07-10 19:30:00', 18,18);
 
 INSERT INTO Facturacion (id, Fecha, Total, idCliente) VALUES
 (1, '2024-06-06', 150000, 1),
@@ -124,7 +124,7 @@ INSERT INTO Facturacion (id, Fecha, Total, idCliente) VALUES
 (15, '2024-07-04', 215000, 15),
 (16, '2024-07-06', 225000, 16),
 (17, '2024-07-08', 235000, 17),
-(18, '2024-07-10', 245000, 18)
+(18, '2024-07-10', 245000, 18);
 
 
 
@@ -147,7 +147,7 @@ INSERT INTO Reparacion (id, Fecha, CostoTotal,descripcion,duracionTotal,idVehicu
 (15, '2024-07-05', 160000, 'Reparación de sistema de enfriamiento',123,15),
 (16, '2024-07-07', 180000, 'Reparación de sistema de suspensión',19,16),
 (17, '2024-07-09', 200000, 'Reparación de sistema de frenos',56,17),
-(18, '2024-07-11', 220000, 'Reparación de sistema eléctrico',90,18)
+(18, '2024-07-11', 220000, 'Reparación de sistema eléctrico',90,18);
 
 
 INSERT INTO Servicio_reparacion (id, idServicio, idReparacion) VALUES
@@ -168,7 +168,7 @@ INSERT INTO Servicio_reparacion (id, idServicio, idReparacion) VALUES
 (15, 15, 15),
 (16, 16, 16),
 (17, 17, 17),
-(18, 18, 18)
+(18, 18, 18);
 
 
 INSERT INTO Facturacion_detalle (id, Cantidad, Precio, idFacturacion, idServicio_Reparacion) VALUES
@@ -189,7 +189,7 @@ INSERT INTO Facturacion_detalle (id, Cantidad, Precio, idFacturacion, idServicio
 (15, 1, 160000, 15, 15),
 (16, 1, 180000, 16, 16),
 (17, 1, 200000, 17, 17),
-(18, 1, 220000, 18, 18)
+(18, 1, 220000, 18, 18);
 
 
 INSERT INTO Cargo (id, nombre) VALUES
@@ -241,7 +241,7 @@ INSERT INTO Reparacion_Empleado (id, idReparacion, idEmpleado) VALUES
 (15, 15, 15),
 (16, 16, 16),
 (17, 17, 17),
-(18, 18, 18)
+(18, 18, 18);
 
 
 INSERT INTO Pieza (id, nombre, descripcion, precio) VALUES
